@@ -30,6 +30,14 @@ public class HttpAppender extends HttpAppenderAbstract {
 		super.start();
 	}
 	
+	public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
+	
 	protected void checkProperties() {
 		if (isStringEmptyOrNull(url)) {
 			url = DEFAULT_URL;
