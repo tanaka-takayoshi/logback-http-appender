@@ -5,7 +5,7 @@
 ## How to use
 
 ```xml
-<appender name="STASH" class="com.uppoints.logback.http.appender.HttpAuthenticationAppender">
+<appender name="STASH" class="tw.kewang.logback.appender.HttpAuthenticationAppender">
 				<protocol>https</protocol>
 				<url>localhost</url>
 				<port>443</port>
