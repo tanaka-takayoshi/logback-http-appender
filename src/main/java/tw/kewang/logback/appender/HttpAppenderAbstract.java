@@ -165,14 +165,16 @@ public abstract class HttpAppenderAbstract extends UnsynchronizedAppenderBase<IL
 	}
 	
 	protected void reconnect(ILoggingEvent event) {
-		try {
-			addInfo(String.format("Trying to reconnect in %s seconds", reconnectDelay));
-			Thread.sleep(Duration.ofSeconds(reconnectDelay).toMillis());
-			append(event);
-		} catch (InterruptedException e1) {
-			addError("Erro trying to reconnect: ", e1);
-			e1.printStackTrace();
-		}	
+	    if(reconnectDelay > 0) {
+    		try {
+    			addInfo(String.format("Trying to reconnect in %s seconds", reconnectDelay));
+    			Thread.sleep(Duration.ofSeconds(reconnectDelay).toMillis());
+    			append(event);
+    		} catch (InterruptedException e1) {
+    			addError("Erro trying to reconnect: ", e1);
+    			e1.printStackTrace();
+    		}
+	    }
 	}
 
 	protected boolean showResponse(HttpURLConnection conn) throws IOException {
