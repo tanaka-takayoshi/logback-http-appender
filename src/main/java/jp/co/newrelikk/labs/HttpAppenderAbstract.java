@@ -1,4 +1,4 @@
-package tw.kewang.logback.appender;
+package jp.co.newrelikk.labs;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -45,7 +45,12 @@ public abstract class HttpAppenderAbstract extends UnsynchronizedAppenderBase<IL
 	 * Defines default time in seconds to try to reconnect if connection is lost.
 	 */
 	protected final static int DEFAULT_RECONNECT_DELAY = 30;
-	
+
+	/**
+	 * Defines default method to send data.
+	 */
+	protected final static String DEFAULT_METHOD = "POST";
+
 	protected final String MSG_USING = "Using %s: %s";
 	protected final String MSG_NOT_SET = "Assuming default value for %s: %s";
 
@@ -60,22 +65,21 @@ public abstract class HttpAppenderAbstract extends UnsynchronizedAppenderBase<IL
 	protected String body;
 	protected String headers;
 	protected int reconnectDelay;
+	protected String method;
 
 	@Override
 	public void start() {
-		if (encoder == null) {
-			addError("No encoder was configured. Use <encoder> to specify the fully qualified class name of the encoder to use");
-			return;
-		}
-		
 		checkProperties();
-		normalizeContentType();
-		
 		encoder.start();
 		super.start();
 	}
 
 	protected void checkProperties() {
+		if (encoder == null) {
+			addError("No encoder was configured. Use <encoder> to specify the fully qualified class name of the encoder to use");
+			return;
+		}
+
 		if (isStringEmptyOrNull(protocol)) {
 			protocol = DEFAULT_PROTOCOL;
 			addInfo(String.format(MSG_NOT_SET, "protocol", protocol));
@@ -108,6 +112,7 @@ public abstract class HttpAppenderAbstract extends UnsynchronizedAppenderBase<IL
 			contentType = DEFAULT_CONTENT_TYPE;
 			addInfo(String.format(MSG_NOT_SET, "contentType", contentType));
 		} else {
+			normalizeContentType();
 			addInfo(String.format(MSG_USING, "contentType", contentType));
 		}
 		
@@ -117,14 +122,30 @@ public abstract class HttpAppenderAbstract extends UnsynchronizedAppenderBase<IL
 		} else {
 			addInfo(String.format(MSG_USING, "reconnectDelay", reconnectDelay));
 		}
+
+		if (isStringEmptyOrNull(method)) {
+			method = DEFAULT_METHOD;
+			addInfo(String.format(MSG_NOT_SET, "method", method));
+		} else {
+			normalizeMethodName();
+			addInfo(String.format(MSG_USING, "method", method));
+		}
 	}
 
-	protected void normalizeContentType() {
+	static boolean isStringEmptyOrNull(String value) {
+		return value == null || value.isEmpty();
+	}
+
+	private void normalizeContentType() {
 		if (contentType.equalsIgnoreCase("json")) {
 			contentType = "application/json";
 		} else if (contentType.equalsIgnoreCase("xml")) {
 			contentType = "application/xml";
 		}
+	}
+
+	private void normalizeMethodName() {
+		method = method.toUpperCase();
 	}
 
 	@Override
@@ -135,7 +156,7 @@ public abstract class HttpAppenderAbstract extends UnsynchronizedAppenderBase<IL
 			transformHeaders(conn, objEncoded.length);
 			sendBodyRequest(objEncoded, conn);
 		} catch (IOException e) {
-			addError("Error ocurred during the connection: ", e);
+			addError("Error occurred during the connection: ", e);
 			reconnect(event);
 		}
 	}
@@ -171,7 +192,7 @@ public abstract class HttpAppenderAbstract extends UnsynchronizedAppenderBase<IL
     			Thread.sleep(Duration.ofSeconds(reconnectDelay).toMillis());
     			append(event);
     		} catch (InterruptedException e1) {
-    			addError("Erro trying to reconnect: ", e1);
+    			addError("Error trying to reconnect: ", e1);
     			e1.printStackTrace();
     		}
 	    }
@@ -179,14 +200,14 @@ public abstract class HttpAppenderAbstract extends UnsynchronizedAppenderBase<IL
 
 	protected boolean showResponse(HttpURLConnection conn) throws IOException {
 		int responseCode = conn.getResponseCode();
+		String response = IOUtils.toString(conn.getInputStream(), Charset.defaultCharset());
+		addInfo(String.format("Response result: %s", response));
 
-		if (responseCode != HttpURLConnection.HTTP_OK) {
+		if (responseCode >= 300) {
 			addError(String.format("Error to send logs: %s", conn));
 			return false;
 		}
 
-		String response = IOUtils.toString(conn.getInputStream(), Charset.defaultCharset());
-		addInfo(String.format("Response result: %s", response));
 		return true;
 	}
 	
@@ -292,8 +313,13 @@ public abstract class HttpAppenderAbstract extends UnsynchronizedAppenderBase<IL
 	public void setReconnectDelay(int reconnectDelay) {
 		this.reconnectDelay = reconnectDelay;
 	}
-	
-	protected static boolean isStringEmptyOrNull(String value){
-		return value == null || value.isEmpty();
+
+	public String getMethod() {
+		return method;
 	}
+
+	public void setMethod(String method) {
+		this.method = method;
+	}
+
 }

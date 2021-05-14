@@ -1,4 +1,4 @@
-package tw.kewang.logback.appender;
+package jp.co.newrelikk.labs;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -14,45 +14,6 @@ import ch.qos.logback.core.encoder.Encoder;
 
 public class HttpAppender extends HttpAppenderAbstract {
 
-	/**
-	 * Defines default method to send data.
-	 */
-	protected final static String DEFAULT_METHOD = "POST";
-
-	protected Encoder<ILoggingEvent> encoder;
-	protected Layout<ILoggingEvent> layout;
-	protected String method;
-
-	@Override
-	public void start() {
-		normalizeMethodName();
-		
-		super.start();
-	}
-	
-	public String getMethod() {
-        return method;
-    }
-
-    public void setMethod(String method) {
-        this.method = method;
-    }
-	
-	protected void checkProperties() {
-		if (isStringEmptyOrNull(url)) {
-			url = DEFAULT_URL;
-			addInfo(String.format(MSG_NOT_SET, "url", url));
-		} else {
-			addInfo(String.format(MSG_USING, "url", url));
-		}
-		
-		if (isStringEmptyOrNull(method)) {
-			method = DEFAULT_METHOD;
-			addInfo(String.format(MSG_NOT_SET, "method", method));
-		} else {
-			addInfo(String.format(MSG_USING, "method", method));
-		}
-	}
 
 	@Override
 	public void append(ILoggingEvent event) {
@@ -93,10 +54,6 @@ public class HttpAppender extends HttpAppenderAbstract {
 				return;
 			}
 		}
-	}
-
-	private void normalizeMethodName() {
-		method = method.toUpperCase();
 	}
 
 	protected void transformHeaders(HttpURLConnection conn) {

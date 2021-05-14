@@ -1,4 +1,4 @@
-package tw.kewang.logback.appender;
+package jp.co.newrelikk.labs;
 
 import java.net.HttpURLConnection;
 import java.net.URL;

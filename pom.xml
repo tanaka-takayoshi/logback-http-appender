@@ -3,13 +3,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.schelldorfer</groupId>
+    <groupId>jp.co.newrelikk.labs</groupId>
     <artifactId>logback-http-appender</artifactId>
-    <version>0.3.6-SNAPSHOT</version>
+    <version>0.4.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>logback-http-appender</name>
-    <url>http://maven.apache.org</url>
+    <url>https://maven.apache.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -63,26 +63,18 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <addMavenDescriptor>false</addMavenDescriptor>
-                    </archive>
-                </configuration>
+                <version>3.2.0</version>
             </plugin>
         </plugins>
     </build>
 
     <distributionManagement>
         <repository>
-            <id>eswitch-artifactory-release</id>
-            <name>libs-release-local</name>
-            <url>https://artifactory.e-switch.ch/artifactory/libs-release-local</url>
+            <id>github</id>
+            <name>GitHub OWNER Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/tanaka-takayoshi/logback-http-appender</url>
         </repository>
-        <snapshotRepository>
-            <id>eswitch-artifactory-snapshot</id>
-            <name>libs-snapshot-local</name>
-            <url>https://artifactory.e-switch.ch/artifactory/libs-snapshot-local/</url>
-        </snapshotRepository>
     </distributionManagement>
 </project>
