@@ -72,14 +72,9 @@
 
     <distributionManagement>
         <repository>
-            <id>eswitch-artifactory-release</id>
-            <name>libs-release-local</name>
-            <url>https://artifactory.e-switch.ch/artifactory/libs-release-local</url>
+            <id>github</id>
+            <name>GitHub OWNER Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/tanaka-takayoshi/logback-http-appender</url>
         </repository>
-        <snapshotRepository>
-            <id>eswitch-artifactory-snapshot</id>
-            <name>libs-snapshot-local</name>
-            <url>https://artifactory.e-switch.ch/artifactory/libs-snapshot-local/</url>
-        </snapshotRepository>
     </distributionManagement>
 </project>
