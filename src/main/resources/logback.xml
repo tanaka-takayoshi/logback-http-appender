@@ -20,7 +20,7 @@
         </encoder>
     </appender>
 
-    <appender name="HTTP" class="tw.kewang.logback.appender.HttpAppender">
+    <appender name="HTTP" class="jp.co.newrelikk.labs.HttpAppender">
         <method>post</method>
         <url>http://example.com/issues.json</url>
         <contentType>json</contentType>
