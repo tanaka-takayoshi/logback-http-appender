@@ -1,20 +1,15 @@
 # logback-http-appender
 
-[![Build Status](https://travis-ci.org/kewang/logback-http-appender.svg?branch=master)](https://travis-ci.org/kewang/logback-http-appender)
+
 
 ## How to use
 
 ```xml
 
-<appender name="STASH" class="jp.co.newrelikk.labs.HttpAuthenticationAppender">
-    <protocol>https</protocol>
-    <url>localhost</url>
-    <port>443</port>
-    <path>/logs/logstash</path>
-    <authentication>
-        <username>username</username>
-        <password>senha</password>
-    </authentication>
+<appender name="NewRelicLogs" class="jp.co.newrelikk.labs.HttpAppender">
+    <contentType>application/json</contentType>
+    <url>https://example.com/logs/v1</url>
+    <headers>{"X-Insert-Key":"YourKeyHere"}</headers>
     <reconnectDelay>10</reconnectDelay>
 
     <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
@@ -42,7 +37,30 @@
         </providers>
     </encoder>
 </appender>
+```
 
+### Use with New Relic Logs in Context
+
+Add New Relic Logs for logback.
+
+```xml
+<dependency>
+    <groupId>com.newrelic.logging</groupId>
+    <artifactId>logback</artifactId>
+    <version>2.2</version>
+</dependency>
+```
+
+Configure as the following.
+
+```xml
+<appender name="NewRelicLogs" class="jp.co.newrelikk.labs.HttpAppender">
+    <contentType>application/json</contentType>
+    <url>https://log-api.newrelic.com/logs/v1</url>
+    <headers>{"X-License-Key":"YourNewRelicLicenseKey"}</headers>
+    <reconnectDelay>10</reconnectDelay>
+    <encoder class="com.newrelic.logging.logback.NewRelicEncoder"/>
+</appender>
 ```
 
 ## References
