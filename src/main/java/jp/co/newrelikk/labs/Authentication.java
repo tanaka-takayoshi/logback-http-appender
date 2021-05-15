@@ -22,7 +22,7 @@ public class Authentication {
 	}
 	
 	public boolean isConfigured() {
-		return HttpAppenderAbstract.isStringEmptyOrNull(username) == false && HttpAppenderAbstract.isStringEmptyOrNull(password) == false;
+		return username != null && !username.isEmpty() && password != null && !password.isEmpty();
 	}
 
 }

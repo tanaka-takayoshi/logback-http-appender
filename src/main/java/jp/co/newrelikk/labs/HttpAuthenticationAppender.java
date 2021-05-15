@@ -2,6 +2,8 @@ package jp.co.newrelikk.labs;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import org.apache.commons.codec.binary.Base64;
 
 /**
@@ -10,7 +12,7 @@ import org.apache.commons.codec.binary.Base64;
  * @author Thiago Diniz da Silveira<thiagods.ti@gmail.com>
  *
  */
-public class HttpAuthenticationAppender extends HttpAppenderAbstract
+public class HttpAuthenticationAppender extends HttpAppenderBase<ILoggingEvent>
 {
 
     private static final String SEPARATOR_BASIC_AUTHENTICATION = ":";
@@ -32,39 +34,12 @@ public class HttpAuthenticationAppender extends HttpAppenderAbstract
         String userPassword = authentication.getUsername() + SEPARATOR_BASIC_AUTHENTICATION + authentication.getPassword();
         encondedUserPassword = Base64.encodeBase64String(userPassword.getBytes());
 
-        openConnection();
         addInfo("Using Basic Authentication");
     }
 
     @Override
-    protected HttpURLConnection openConnection()
-    {
-        HttpURLConnection conn = null;
-        try
-        {
-            URL urlObj = new URL(protocol, url, port, path);
-            conn = (HttpURLConnection) urlObj.openConnection();
-            conn.setRequestProperty("Authorization", "Basic " + encondedUserPassword);
-            conn.setRequestMethod("POST");
-            return conn;
-        } catch (Exception e)
-        {
-            addError("Error to open connection Exception: ", e);
-            return null;
-        } finally
-        {
-            try
-            {
-                if (conn != null)
-                {
-                    conn.disconnect();
-                }
-            } catch (Exception e)
-            {
-                addError("Error to open connection Exception: ", e);
-                return null;
-            }
-        }
+    protected void configureHeadersImpl(HttpURLConnection conn) {
+        conn.setRequestProperty("Authorization", "Basic " + encondedUserPassword);
     }
 
     public Authentication getAuthentication()
